@@ -1,0 +1,6 @@
+c:\users\kumlin\documents\visual studio 2015\Projects\BattleShip\BattleShip\bin\Debug\BattleShip.exe.config
+C:\Users\Kumlin\Documents\Visual Studio 2015\Projects\BattleShip\BattleShip\bin\Debug\BattleShip.exe
+C:\Users\Kumlin\Documents\Visual Studio 2015\Projects\BattleShip\BattleShip\bin\Debug\BattleShip.pdb
+C:\Users\Kumlin\Documents\Visual Studio 2015\Projects\BattleShip\BattleShip\obj\Debug\BattleShip.exe
+C:\Users\Kumlin\Documents\Visual Studio 2015\Projects\BattleShip\BattleShip\obj\Debug\BattleShip.pdb
+C:\Users\Kumlin\documents\visual studio 2015\Projects\BattleShip\BattleShip\obj\Debug\BattleShip.csprojResolveAssemblyReference.cache
