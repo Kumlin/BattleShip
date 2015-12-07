@@ -17,10 +17,13 @@ namespace BattleShip
 
         private string promptAnswer;
 
+        private enum charToNumber { A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, H = 7, I = 8, J = 9};
+
         private enum Ships { AircraftCarrier = 5, BattleShip = 4, Destroyer = 3, Submarine = 2, PatrolBoat = 1 };
 
         private List<string> myChars = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", };
         private List<string> myInts = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", };
+        private List<string> myVertHoriz = new List<string> { "V", "H" };
 
         /*
         private int numberOfBattleShips = 2;
@@ -148,7 +151,8 @@ namespace BattleShip
                }
             } 
 
-            if (PassBoard(x, y))
+            /*
+            if (PassSectionForShip(x, y))
             {
 
             }
@@ -156,6 +160,8 @@ namespace BattleShip
             {
 
             }
+            */
+
 
             boardInitialized = true;
         }
@@ -163,24 +169,80 @@ namespace BattleShip
         //Iterates through available ships to add
         private int AddShipToBoard(int shipsToAdd, int loopCounter)
         {
-            Tuple<char, int> location;
             int numCordinate = 0;
+            char charCordinate = '?';
+            bool isVertical = true;
             string input;
 
-            Console.WriteLine("Enter location (Example: A6) to center your {0} with a length of {1}:", EnumNameFlippper(Math.Abs((loopCounter-6))), shipsToAdd);
+            Console.WriteLine("(Example: (A6 V), A is y coordinate 6 is x coordinate and (V)ertical or (H)orizontal)\nEnter location to center your {0} with a length of {1}:", EnumNameFlippper(Math.Abs((loopCounter-6))), shipsToAdd);
             input = Console.ReadLine();
 
 
-            if (input.Length == 0 || input.Length > 2 || !myChars.Contains(input.Substring(0, 1)) || !myInts.Contains(input.Substring(1,1)))
+            if (input.Length == 0 || input.Length > 4 || !myChars.Contains(input.Substring(0, 1)) || !myInts.Contains(input.Substring(1,1))) 
             {
-                Console.WriteLine("Input error! Format example A6. Try again...");
+                if(input.Substring(2, 1) != " " || input.Substring(3, 1) != "H" || input.Substring(3, 1) != "V")
+                {
+                    Console.WriteLine("Input error! Format example A6 V. Try again...");
+                    Console.ReadLine();
+                    //Wipe board
+                    return 5;
+                }
+                
+            }
+
+            charCordinate = Convert.ToChar(input.Substring(0, 1));
+            numCordinate = Convert.ToInt32(input.Substring(1, 1));
+            if(input.Substring(3,1) == "V" || input.Substring(3,1) == "H")
+            {
+                if(input.Substring(3, 1) == "V")
+                {
+                    isVertical = true;
+                }
+                else
+                {
+                    isVertical = false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("What the mother fuck!");
                 Console.ReadLine();
-                //Wipe board
                 return 5;
             }
 
+            Console.Clear();
+            DisplayPlayerBoard(true);
+            EditBoard(charCordinate, numCordinate, shipsToAdd, isVertical);
+
             Console.ReadLine();
             return (shipsToAdd-1);
+        }
+
+        //edits the player board
+        public void EditBoard(char yChar, int xInt, int shipSize, bool isVertical)
+        {
+            int yInt = myChars.IndexOf(Convert.ToString(yChar));
+            Console.WriteLine("Your pure int cordinate is {0}y {1}x...", yInt, xInt);
+            Console.ReadLine();
+
+            if(isVertical)
+            {
+               for (int i = 0; i < shipSize; i++)
+                {
+                    playerBoardArray[yInt, xInt] = '#';
+                }
+            }
+            else
+            {
+                for (int i = 0; i < shipSize; i++)
+                {
+                    playerBoardArray[yInt, xInt] = '#';
+                }
+            }
+            Console.Clear();
+            DisplayPlayerBoard(true);
+            Console.WriteLine("Added ship center!");
+            Console.ReadLine();
         }
 
         private string EnumNameFlippper(int numberInSet)
@@ -237,17 +299,18 @@ namespace BattleShip
             }
         }
 
-        //edits the player board
-        public void EditBoard(char y, int x, string shipType)
+        
+
+        //Checks if ocean tiles have enough blank space to put ship centered on location
+        private bool PassSectionForShip(char y, int x, int shipSize)
         {
-            
+            return true;
         }
 
-
-        //Checks to see if something was at location on player board
-        private bool PassBoard(int x, int y)
+        //Checks to see if ship was at the location
+        private bool PassBoardForHit(char y, int x )
         {
-            if(playerBoardArray[x,y] != '~')
+            if(playerBoardArray[x,y] != '#')
             {
                 return true;
             }
@@ -273,7 +336,7 @@ namespace BattleShip
             */
         }
 
-        //Returns what is on the board at recieved cordinates
+        //Returns what is on the board at recieved coordinates
         public char WhatIsOnBoard(int x, int y)
         {
             return playerBoardArray[x, y];
