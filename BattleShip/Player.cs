@@ -197,7 +197,7 @@ namespace BattleShip
             Console.WriteLine("(Example: (A6 V), A is y coordinate 6 is x coordinate and (V)ertical or (H)orizontal)\nEnter location to center your {0} with a length of {1}:", EnumNameFlippper(Math.Abs((loopCounter - 6))), shipsToAdd);
             input = Console.ReadLine();
 
-            if(input.Length == 0 || input.Length > 4)
+            if(input.Length != 4)
             {
                 Console.WriteLine("Your string is the wrong size!");
                 Console.ReadLine();
@@ -254,19 +254,64 @@ namespace BattleShip
             return (shipsToAdd-1);
         }
 
+       
+
         public bool CanEditLocation(char yChar, int xInt, int shipSize, bool isVertical)
         {
+            shipSize = shipSize - 1;
             int yInt = myChars.IndexOf(Convert.ToString(yChar));
 
-            for (int i = 0; i < shipSize; i++)
+            //Uses isVertical to determine if the ship placement is horizontal or vertical
+            if (isVertical)
             {
-                if (yInt + i > playerBoardArray.Length || yInt + i < 0 || yInt - i > playerBoardArray.Length || yInt - i < 0)
+                //Checks if the ship will stay in bounds
+                for (int i = 0; i < shipSize; i++)
                 {
-                    Console.Write("You don goofed and your ship will not fit this way!");
-                    Console.ReadLine();
-                    return false;
+                    if (yInt + i > playerBoardArray.Length || yInt + i < 0 || yInt - i > playerBoardArray.Length || yInt - i < 0)
+                    {
+                        Console.Write("You done goofed and your ship will not fit this way! To close to the edge(first if statement)...");
+                        Console.ReadLine();
+                        return false;
+                    }
+                    if(shipSize > 1 && yInt >= 9)
+                    {
+                        Console.Write("You done goofed and your ship will not fit this way! To close to the edge(second if statement)...");
+                        Console.ReadLine();
+                        return false;
+                    }
+                   
                 }
-             }
+                //Checks if the ship will overlap other ships
+                for (int i = 0; i < shipSize; i++)
+                {
+                    if (playerBoardArray[(yInt + i), xInt] == '#' || playerBoardArray[(yInt - i), xInt] == '#')
+                    {
+                        Console.Write("You done goofed and your ship will not fit this way!");
+                        Console.ReadLine();
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (!isVertical)
+            {
+                for (int i = 0; i < shipSize; i++)
+                {
+                    if (xInt + i > playerBoardArray.Length || xInt + i < 0 || xInt - i > playerBoardArray.Length || xInt - i < 0)
+                    {
+                        Console.Write("You done goofed and your ship will not fit this way!");
+                        Console.ReadLine();
+                        return false;
+                    }
+                    else if (playerBoardArray[yInt, (xInt + i)] == '#' || playerBoardArray[yInt, (xInt + i)] == '#')
+                    {
+                        Console.Write("You done goofed and your ship will not fit this way!");
+                        Console.ReadLine();
+                        return false;
+                    }
+                }
+            }
+                
             return true;
           }
 
