@@ -145,10 +145,30 @@ namespace BattleShip
                Console.Clear();
                DisplayPlayerBoard(rawDisplay);
                shipsToAdd = AddShipToBoard(shipsToAdd, loopCounter);
-               if(shipsToAdd == 5)
-               {
-                    loopCounter = 0;
-               }
+
+                //Find a better way to do this
+                switch (shipsToAdd)
+                {
+                    case 0:
+                        loopCounter = 5;
+                        break;
+                    case 1:
+                        loopCounter = 4;
+                        break;
+                    case 2:
+                        loopCounter = 3;
+                        break;
+                    case 3:
+                        loopCounter = 2;
+                        break;
+                    case 4:
+                        loopCounter = 1;
+                        break;
+                    case 5:
+                        loopCounter = 0;
+                        break;
+                }
+
             } 
 
             /*
@@ -174,27 +194,33 @@ namespace BattleShip
             bool isVertical = true;
             string input;
 
-            Console.WriteLine("(Example: (A6 V), A is y coordinate 6 is x coordinate and (V)ertical or (H)orizontal)\nEnter location to center your {0} with a length of {1}:", EnumNameFlippper(Math.Abs((loopCounter-6))), shipsToAdd);
+            Console.WriteLine("(Example: (A6 V), A is y coordinate 6 is x coordinate and (V)ertical or (H)orizontal)\nEnter location to center your {0} with a length of {1}:", EnumNameFlippper(Math.Abs((loopCounter - 6))), shipsToAdd);
             input = Console.ReadLine();
 
-
-            if (input.Length == 0 || input.Length > 4 || !myChars.Contains(input.Substring(0, 1)) || !myInts.Contains(input.Substring(1,1))) 
+            if(input.Length == 0 || input.Length > 4)
             {
-                if(input.Substring(2, 1) != " " || input.Substring(3, 1) != "H" || input.Substring(3, 1) != "V")
+                Console.WriteLine("Your string is the wrong size!");
+                Console.ReadLine();
+                //Wipe board
+                return shipsToAdd;
+            }
+            else if (!myChars.Contains(input.Substring(0, 1)) || !myInts.Contains(input.Substring(1, 1)))
+            {
+                if (input.Substring(2, 1) != " " || input.Substring(3, 1) != "H" || input.Substring(3, 1) != "V")
                 {
                     Console.WriteLine("Input error! Format example A6 V. Try again...");
                     Console.ReadLine();
                     //Wipe board
-                    return 5;
+                    return shipsToAdd;
                 }
-                
+
             }
 
             charCordinate = Convert.ToChar(input.Substring(0, 1));
             numCordinate = Convert.ToInt32(input.Substring(1, 1));
-            if(input.Substring(3,1) == "V" || input.Substring(3,1) == "H")
+            if (input.Substring(3, 1) == "V" || input.Substring(3, 1) == "H")
             {
-                if(input.Substring(3, 1) == "V")
+                if (input.Substring(3, 1) == "V")
                 {
                     isVertical = true;
                 }
@@ -205,18 +231,44 @@ namespace BattleShip
             }
             else
             {
-                Console.WriteLine("What the mother fuck!");
+                Console.WriteLine("What the mother fuck! Did not put V or H");
                 Console.ReadLine();
-                return 5;
+                return shipsToAdd;
             }
 
             Console.Clear();
             DisplayPlayerBoard(true);
-            EditBoard(charCordinate, numCordinate, shipsToAdd, isVertical);
 
+            if(CanEditLocation(charCordinate, numCordinate, shipsToAdd, isVertical))
+            {
+                EditBoard(charCordinate, numCordinate, shipsToAdd, isVertical);
+            }
+            else
+            {
+                Console.Write("You cannot place a ship there!");
+                Console.ReadLine();
+                Console.Clear();
+                return shipsToAdd;
+            }
             Console.ReadLine();
             return (shipsToAdd-1);
         }
+
+        public bool CanEditLocation(char yChar, int xInt, int shipSize, bool isVertical)
+        {
+            int yInt = myChars.IndexOf(Convert.ToString(yChar));
+
+            for (int i = 0; i < shipSize; i++)
+            {
+                if (yInt + i > playerBoardArray.Length || yInt + i < 0 || yInt - i > playerBoardArray.Length || yInt - i < 0)
+                {
+                    Console.Write("You don goofed and your ship will not fit this way!");
+                    Console.ReadLine();
+                    return false;
+                }
+             }
+            return true;
+          }
 
         //edits the player board
         public void EditBoard(char yChar, int xInt, int shipSize, bool isVertical)
